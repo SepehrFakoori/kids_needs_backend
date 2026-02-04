@@ -12,4 +12,14 @@ class Ad(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.creator.id) + " " + self.title
+        return f"{self.creator.id} {self.title}"
+
+
+class AdImage(models.Model):
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to="ads/")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Image for ad {self.ad.title}"
