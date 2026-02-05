@@ -1,0 +1,35 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+.venv/
+env/
+venv/
+
+# Logs
+*.log
+*.pot
+*.py[cod]
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docker
+docker-compose.override.yml
+
+# Env files
+.env
+.env.*
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
