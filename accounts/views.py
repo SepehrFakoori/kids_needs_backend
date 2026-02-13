@@ -1,15 +1,15 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import SearchFilter
 
-from .models import User
-from .serializers import UserSerializer
+from .models import Account
+from .serializers import AccountSerializer
 from core.pagination import Pagination
 
 
 # Create your views here.
-class UserViewSet(ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class AccountViewSet(ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
     pagination_class = Pagination
     filter_backends = [SearchFilter]
-    search_fields = ['first_name', 'last_name']
+    search_fields = ['username']

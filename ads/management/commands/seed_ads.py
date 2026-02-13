@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from faker import Faker
 
 from ads.models import Ad
-from users.models import User
+from accounts.models import Account
 
 
 class Command(BaseCommand):
@@ -20,15 +20,15 @@ class Command(BaseCommand):
         clear_data = options['clear']
 
         if clear_data:
-            self.stdout.write("Deleting existing users and ads...")
+            self.stdout.write("Deleting existing ads...")
             Ad.objects.all().delete()
 
         self.stdout.write(f"Creating {ads_count} ads...")
         for _ in range(ads_count):
-            users = User.objects.all()
+            accounts = Account.objects.all()
 
             Ad.objects.create(
-                creator=choice(users),
+                creator=choice(accounts),
                 title=fake.sentence(nb_words=5),
                 description=fake.text(max_nb_chars=200)
             )

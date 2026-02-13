@@ -1,18 +1,18 @@
 from django.db import models
 
-from users.models import User
+from accounts.models import Account
 
 
 # Create your models here.
 class Ad(models.Model):
-    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    creator = models.ForeignKey(Account, on_delete=models.CASCADE)
     title = models.TextField(null=False, blank=False)
     description = models.TextField(null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.creator.id} {self.title}"
+        return f"{self.creator.username} | {self.title} | {self.created_at}"
 
 
 class AdImage(models.Model):

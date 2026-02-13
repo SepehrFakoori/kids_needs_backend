@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import Ad, AdImage
-from users.serializers import UserSerializer
+from accounts.serializers import AccountSerializer
 
 
 class AdImageSerializer(serializers.ModelSerializer):
@@ -11,7 +11,7 @@ class AdImageSerializer(serializers.ModelSerializer):
 
 
 class AdSerializer(serializers.ModelSerializer):
-    creator = UserSerializer(read_only=True)
+    creator = AccountSerializer(read_only=True)
     images = AdImageSerializer(many=True, read_only=True)
 
     class Meta:

@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 
     # Apps
     'core',
-    'users',
+    'accounts',
     'ads',
 ]
 
