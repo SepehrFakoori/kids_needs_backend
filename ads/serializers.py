@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import Ad, AdImage
-from accounts.serializers import AccountSerializer
+from accounts.serializers import UserSerializer
 
 
 class AdImageSerializer(serializers.ModelSerializer):
@@ -11,7 +11,7 @@ class AdImageSerializer(serializers.ModelSerializer):
 
 
 class AdSerializer(serializers.ModelSerializer):
-    creator = AccountSerializer(read_only=True)
+    creator = UserSerializer(read_only=True)
     images = AdImageSerializer(many=True, read_only=True)
 
     class Meta:
@@ -22,3 +22,12 @@ class AdSerializer(serializers.ModelSerializer):
         if not (1 <= len(value) <= 5):
             raise serializers.ValidationError("Images must be between 1 and 5")
         return value
+
+
+# For specific user ads
+class AdUserFreeSerializer(serializers.ModelSerializer):
+    images = AdImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Ad
+        exclude = ('creator',)

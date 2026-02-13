@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from faker import Faker
 
 from ads.models import Ad
-from accounts.models import Account
+from accounts.models import User
 
 
 class Command(BaseCommand):
@@ -25,10 +25,10 @@ class Command(BaseCommand):
 
         self.stdout.write(f"Creating {ads_count} ads...")
         for _ in range(ads_count):
-            accounts = Account.objects.all()
+            users = User.objects.all()
 
             Ad.objects.create(
-                creator=choice(accounts),
+                creator=choice(users),
                 title=fake.sentence(nb_words=5),
                 description=fake.text(max_nb_chars=200)
             )
