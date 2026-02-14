@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     # OpenAPI
     'drf_spectacular',
 
-    # AWS Storage
+    # Object Storage
     'storages',
 
     # Apps
@@ -158,10 +158,10 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
-# AWS Settings
+# Object Storage Settings
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-AWS_S3_ENDPOINT_URL = os.getenv('AWS_S3_ENDPOINT_URL')
+STORAGE_ACCESS_KEY_ID = os.getenv('STORAGE_ACCESS_KEY_ID')
+STORAGE_SECRET_ACCESS_KEY = os.getenv('STORAGE_SECRET_ACCESS_KEY')
+STORAGE_BUCKET_NAME = os.getenv('STORAGE_BUCKET_NAME')
+S3_ENDPOINT_URL = os.getenv('S3_ENDPOINT_URL')
