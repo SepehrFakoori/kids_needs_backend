@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.utils import timezone
-from datetime import datetime, timedelta
 
 
 # Create your managers here.
@@ -45,12 +44,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class OTP(models.Model):
     phone_number = models.CharField(max_length=15)
-    code = models.CharField(max_length=6)
-    created_at = models.DateTimeField(auto_now_add=True)
+    code_hash = models.CharField(max_length=64)
+    salt = models.CharField(max_length=64)
     expires_at = models.DateTimeField()
     is_used = models.BooleanField(default=False)
+    attempts = models.PositiveSmallIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-        if not self.expires_at:
-            self.expires_at = timezone.now() + timedelta(minutes=2)
-        super().save(*args, **kwargs)
+    def is_expired(self):
+        return timezone.now() > self.expires_at

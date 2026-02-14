@@ -15,6 +15,7 @@ from ads.models import Ad
 from ads.serializers import AdUserFreeSerializer
 from .serializers import UserSerializer, SendOTPSerializer, VerifyOTPSerializer
 from core.pagination import Pagination
+from .services.otp import OTPService
 
 
 # Create your views here.
@@ -25,11 +26,27 @@ class SendOTPView(APIView):
     def post(self, request):
         serializer = SendOTPSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         phone_number = serializer.validated_data["phone_number"]
+        otp_service = OTPService()
 
-        code = randint(100000, 999999)
+        OTP.objects.filter(
+            phone_number=phone_number,
+            is_used=False,
+            expires_at__gt=timezone.now(),
+        ).update(is_used=True)
 
-        OTP.objects.create(phone_number=phone_number, code=code)
+        code = otp_service.generate_code()
+        salt = otp_service.generate_salt()
+        code_hash = otp_service.hash_code(code=code, salt=salt)
+        expires_at = otp_service.expires_at()
+
+        OTP.objects.create(
+            phone_number=phone_number,
+            code_hash=code_hash,
+            salt=salt,
+            expires_at=expires_at,
+        )
 
         print(f"OTP for {phone_number}: {code}")
 
@@ -49,27 +66,51 @@ class VerifyOTPView(APIView):
 
         otp = OTP.objects.filter(
             phone_number=phone_number,
-            code=code,
             is_used=False,
             expires_at__gt=timezone.now(),
-        ).last()
+        ).order_by("-created_at").first()
 
         if not otp:
             return Response(
-                data={"error": "Invalid or expired OTP"},
+                {"error": "Invalid or expired OTP"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        if otp.attempts >= 5:
+            return Response(
+                {"error": "Too many attempts"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        otp_service = OTPService()
+
+        is_valid = otp_service.verify_code(
+            code=code,
+            salt=otp.salt,
+            code_hash=otp.code_hash,
+        )
+
+        if not is_valid:
+            otp.attempts += 1
+            otp.save(update_fields=["attempts"])
+            return Response(
+                {"error": "Invalid OTP"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         otp.is_used = True
-        otp.save()
+        otp.save(update_fields=["is_used"])
 
         user, created = User.objects.get_or_create(phone_number=phone_number)
 
         refresh = RefreshToken.for_user(user)
+
         return Response(
             data={
                 "refresh": str(refresh),
                 "access": str(refresh.access_token),
             },
+            status=status.HTTP_200_OK,
         )
 
 
