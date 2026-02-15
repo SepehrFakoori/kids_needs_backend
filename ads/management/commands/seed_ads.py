@@ -5,6 +5,7 @@ from faker import Faker
 
 from ads.models import Ad
 from accounts.models import User
+from categories.models import Category
 
 
 class Command(BaseCommand):
@@ -26,10 +27,12 @@ class Command(BaseCommand):
         self.stdout.write(f"Creating {ads_count} ads...")
         for _ in range(ads_count):
             users = User.objects.all()
+            categories = Category.objects.all()
 
             Ad.objects.create(
                 creator=choice(users),
                 title=fake.sentence(nb_words=5),
-                description=fake.text(max_nb_chars=200)
+                description=fake.text(max_nb_chars=200),
+                category=choice(categories),
             )
         self.stdout.write(self.style.SUCCESS(f"{ads_count} ads created ✅"))

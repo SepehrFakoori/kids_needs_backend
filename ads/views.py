@@ -16,7 +16,7 @@ class AdViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     pagination_class = Pagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = ['creator']
+    filterset_fields = ['creator', 'category']
     search_fields = ['title', 'description']
 
     def perform_create(self, serializer):
