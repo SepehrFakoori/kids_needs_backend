@@ -1,12 +1,11 @@
-from random import randint
-
 from django.utils import timezone
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.filters import SearchFilter
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import action
 
@@ -131,3 +130,33 @@ class UserViewSet(ModelViewSet):
             return self.get_paginated_response(serializer.data)
         serializer = AdUserFreeSerializer(ads, many=True)
         return Response(serializer.data)
+
+    @action(detail=False, methods=['get', 'patch', 'put'], permission_classes=[IsAuthenticated])
+    def me(self, request):
+        user = request.user
+        if request.method == 'GET':
+            serializer = self.get_serializer(user)
+            return Response(serializer.data)
+        # If PUT or PATCH
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+
+class LogoutView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @staticmethod
+    def post(request, *args, **kwargs):
+        try:
+            refresh_token = request.data.get("refresh")
+            if not refresh_token:
+                return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({"message": "Successfully logged out"}, status=status.HTTP_205_RESET_CONTENT)
+        except TokenError:
+            return Response({"error": "Token is invalid or expired"}, status=status.HTTP_400_BAD_REQUEST)
+        except KeyError:
+            return Response({"error": "Malformed request"}, status=status.HTTP_400_BAD_REQUEST)

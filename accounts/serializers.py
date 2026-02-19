@@ -15,6 +15,6 @@ class VerifyOTPSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        # fields = '__all__'
         # Don't show this fields:
         exclude = ('is_superuser', 'is_active', 'is_staff', 'groups', 'user_permissions')
+        read_only_fields = ('id', 'phone_number', 'created_at', 'updated_at')
