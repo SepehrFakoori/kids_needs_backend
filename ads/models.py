@@ -20,6 +20,9 @@ class Ad(models.Model):
     def __str__(self):
         return f"{self.creator.username} | {self.title} | {self.created_at}"
 
+    class Meta:
+        ordering = ['-created_at']
+
 
 class AdImage(models.Model):
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE, related_name='images')
