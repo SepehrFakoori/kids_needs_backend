@@ -100,7 +100,11 @@ class VerifyOTPView(APIView):
         otp.is_used = True
         otp.save(update_fields=["is_used"])
 
-        user, created = User.objects.get_or_create(phone_number=phone_number)
+        # Automatically get existing user or create a new one
+        user, created = User.objects.get_or_create(
+            phone_number=phone_number,
+            defaults={'username': phone_number}
+        )
 
         refresh = RefreshToken.for_user(user)
 
@@ -108,6 +112,7 @@ class VerifyOTPView(APIView):
             data={
                 "refresh": str(refresh),
                 "access": str(refresh.access_token),
+                "is_new_user": created
             },
             status=status.HTTP_200_OK,
         )
