@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from categories.serializers import CategorySerializer
-from .models import Ad, AdImage
+from .models import Ad, AdImage, Bookmark
 from accounts.serializers import UserSerializer
 
 
@@ -24,6 +24,12 @@ class AdSerializer(serializers.ModelSerializer):
         if not (1 <= len(value) <= 5):
             raise serializers.ValidationError("Images must be between 1 and 5")
         return value
+
+    def get_is_bookmarked(self, obj):
+        user = self.context.get('request').user
+        if user.is_authenticated:
+            return Bookmark.objects.filter(user=user, ad=obj).exists()
+        return False
 
 
 # For specific user ads
