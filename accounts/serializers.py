@@ -16,5 +16,5 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         # Don't show this fields:
-        exclude = ('is_superuser', 'is_active', 'is_staff', 'groups', 'user_permissions')
+        fields = ('id', 'phone_number', 'username', 'created_at', 'updated_at')
         read_only_fields = ('id', 'phone_number', 'created_at', 'updated_at')
