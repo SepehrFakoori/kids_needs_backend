@@ -1,5 +1,6 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from .views import UserViewSet, SendOTPView, VerifyOTPView, LogoutView
 
@@ -9,8 +10,8 @@ router.register(prefix=r'accounts', viewset=UserViewSet, basename='accounts')
 authurlpatterns = [
     path("send-otp", SendOTPView.as_view(), name="send-otp"),
     path("verify-otp", VerifyOTPView.as_view(), name="verify-otp"),
-path("logout", LogoutView.as_view(), name="logout"),
+    path("refresh", TokenRefreshView.as_view(), name="refresh"),
+    path("logout", LogoutView.as_view(), name="logout"),
 ]
 
 urlpatterns = authurlpatterns + router.urls
-

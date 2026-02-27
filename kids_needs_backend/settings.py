@@ -24,7 +24,13 @@ SECRET_KEY = 'django-insecure-oh&ye2jdfqz1*byspg!8b&+v8d&cob2$n&i_#*ja-k$y0+$%0(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "glyptographic-follicular-casen.ngrok-free.dev",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://glyptographic-follicular-casen.ngrok-free.dev",
+]
 
 # Application definition
 
@@ -161,6 +167,11 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': os.getenv('DESCRIPTION'),
     'VERSION': os.getenv('VERSION'),
     'SERVE_INCLUDE_SCHEMA': False,
+}
+
+SIMPLE_JWT = {
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ROTATE_REFRESH_TOKEN': True,
 }
 
 # Object Storage Settings
